@@ -24,7 +24,7 @@ func ConcurrentRequests(client http.Client, done chan bool) {
 
 	// httpClient := http.Client{}
 	// Fetch N users
-	n := 10
+	n := 50
 	urls := []string{}
 	for i := 0; i < n; i++ {
 		urls = append(urls, fmt.Sprintf("https://jsonplaceholder.typicode.com/users/%d", (i+1)))
@@ -60,6 +60,11 @@ func FetchURLs(client http.Client, urls []string) <-chan string {
 				resp, err := client.Do(r)
 				if err != nil {
 					fmt.Println("error doing request: " + err.Error())
+					return
+				}
+
+				if resp.StatusCode != http.StatusOK {
+					fmt.Printf("unexpected status code: %d\n", resp.StatusCode)
 					return
 				}
 
